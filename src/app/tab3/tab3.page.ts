@@ -28,7 +28,8 @@ export class Tab3Page {
   }
 
   /**
-   * Toma una foto con la camara, la asigna a la variable photo y la guarda en la base de datos
+   * @function takePhoto
+   * @description Toma una foto con la camara (guardandola en la base de datos) y la asigna a la mostrada en la app
    */
   takePhoto() {
     this.photoService.takePhoto('0', 'profile-photo').then((x) => {
@@ -36,11 +37,18 @@ export class Tab3Page {
       this.auth.getData()
     });
   }
+  /**
+   * @function logout
+   * @description Cierra la sesion actual y vuelve a el inicio de sesion
+   */
   logout() {
     this.auth.signOut();
     this.router.navigate(['/login']);
   }
-
+  /**
+   * @function getUsername
+   * @description Obtiene el nombre del usuario actual desde sus datos guardados en la base de datos y lo asigna a lo mostrado en la app
+   */
   getUsername() {
     this.auth.getData().then((data) => {
       if (data) {
@@ -48,6 +56,10 @@ export class Tab3Page {
       }
     });
   }
+  /**
+   * @function getPicture
+   * @description Obtiene la imagen del usuario actual desde su datos guardados en la base de datos y la asigna a la mostrada en la app
+   */
   getPicture() {
     this.auth.getData().then((data) => {
       if (data) {

@@ -14,7 +14,10 @@ export class SignupPage implements OnInit {
   regForm!: FormGroup;
 
   constructor(public formBuilder: FormBuilder, public loadingCtrl: LoadingController, public authService: AutheticationService, public router : Router) { }
-
+  /**
+   * @function ngOnInit
+   * @description Crea el formulario de la app con las reglas pertinentes
+   */
   ngOnInit() {
     this.regForm = this.formBuilder.group({
       fullname: ['', [Validators.required]],
@@ -32,7 +35,10 @@ export class SignupPage implements OnInit {
   get errorControl() {
     return this.regForm.controls;
   }
-
+  /**
+   * @function signUp
+   * @description Registra al usuario con los datos puesto en el formulario de la app
+   */
   async signUp() {
     const loading = await this.loadingCtrl.create();
     await loading.present();

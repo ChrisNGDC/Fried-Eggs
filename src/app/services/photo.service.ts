@@ -9,6 +9,12 @@ export class PhotoService {
   public profilePhotos: UserPhoto[] = [];
   public photos: UserPhoto[] = [];
   constructor(private auth: AutheticationService) { }
+  /**
+   * @function takePhoto
+   * @description Llama a la camara para permitir sacar una foto y la guarda en una variable temporal
+   * @param id 
+   * @param filePath 
+   */
   public async takePhoto(id:string, filePath: string) {
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
@@ -32,6 +38,10 @@ export class PhotoService {
       });
     }
   }
+  /**
+   * @function savePhoto
+   * @description Guarda la foto en la base de datos
+   */
   async savePhoto() {
     this.auth.updatePhoto(this.profilePhotos[0])
   }

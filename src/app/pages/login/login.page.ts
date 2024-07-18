@@ -12,6 +12,10 @@ export class LoginPage implements OnInit {
   loginForm!: FormGroup;
   constructor(public route: Router,public formBuilder: FormBuilder, public loadingCtrl: LoadingController, public authService: AutheticationService) { }
 
+  /**
+   * @function ngOnInit
+   * @description Crea el formulario de la app con las reglas pertinentes
+   */
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       email: ['', [
@@ -24,11 +28,13 @@ export class LoginPage implements OnInit {
       ] ]
     });
   }
-
   get errorControl() {
     return this.loginForm.controls;
   }
-
+  /**
+   * @function login
+   * @description Realiza el inicio de sesion segun los datos puestos en el formulario de la app
+   */
   async login() {
     const loading = await this.loadingCtrl.create();
     await loading.present();

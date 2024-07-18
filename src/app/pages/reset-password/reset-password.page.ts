@@ -14,7 +14,10 @@ email:any
 
   ngOnInit() {
   }
-
+  /**
+   * @function resetPassword
+   * @description Manda un mail con un link de reseteo de contraseña al mail puesto en la app
+   */
   async resetPassword(){
     this.authService.resetPassword(this.email).then(()=>{
       console.log('reset link sent');
