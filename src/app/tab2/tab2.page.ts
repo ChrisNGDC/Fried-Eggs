@@ -9,7 +9,8 @@ import { RecetasService } from '../services/recetas.service';
 export class Tab2Page {
   constructor(public recetasService: RecetasService) {}
   /**
-   * Le permite al usuario crear una receta, ingresando un nombre para la misma.
+   * @function AgregarReceta
+   * @description Le permite al usuario crear una receta, ingresando un nombre para la misma.
    */
   async AgregarReceta() {
     let alerta = await this.recetasService.alertController.create({

@@ -26,21 +26,45 @@
   <ion-grid [fixed]="true">
     <ion-row *ngFor="let categoria of categorias">
       <ion-col>
-        <ion-img (click)="elegirCategoria(categoria['strCategory'])" src="{{categoria.strCategoryThumb}}"></ion-img>
+        <ion-img (click)="elegirCategoria(categoria)" src="{{categoria.strCategoryThumb}}"></ion-img>
         <ion-item>
           <ion-label>{{categoria.strCategory}}</ion-label>
+          <ion-button
+            [ngClass]="categoria.plate ? 'plate' : 'category'"
+            aria-label="Favorite"
+            color="light"
+            (click)="interactuarReceta(categoria)"
+          >
+            <ion-icon
+              [class.isFavorite]="categoria.favorite"
+              name="heart"
+              aria-hidden="true"
+            ></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <ion-label class="titles">Paises</ion-label>
+  <ion-label class="titles">{{paisActual}}</ion-label>
   <ion-grid [fixed]="true">
-    <ion-row *ngFor="let area of areas">
+    <ion-row *ngFor="let pais of paises">
       <ion-col>
-        <ion-img src={{area.getImage()}}>"></ion-img>
+        <ion-img (click)="elegirPais(pais)" src={{pais.image}}>"></ion-img>
         <ion-item>
-          <ion-label>{{area.name}}</ion-label>
+          <ion-label>{{pais.name}}</ion-label>
+          <ion-button
+            [ngClass]="pais.plate ? 'plate' : 'area'"
+            aria-label="Favorite"
+            color="light"
+            (click)="interactuarReceta(pais)"
+          >
+            <ion-icon
+              [class.isFavorite]="pais.favorite"
+              name="heart"
+              aria-hidden="true"
+            ></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-col>
     </ion-row>

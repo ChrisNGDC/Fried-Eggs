@@ -15,7 +15,8 @@ export class RecetasComponent {
     private router: Router
   ) { }
   /**
-   * 
+   * @function editarReceta
+   * @description Permite mediente alertController la edicion del nombre de una receta
    * @param receta 
    */
   async EditarReceta(receta: Receta) {
@@ -51,13 +52,28 @@ export class RecetasComponent {
 
     console.log('Editar receta:', receta);
   }
+  /**
+   * @function editarReceta
+   * @description Llama a la funcion EditarReceta
+   * @param receta 
+   */
   editarReceta(receta: Receta) {
     this.EditarReceta(receta)
   }
+  /**
+   * @function eliminarReceta
+   * @description Llama a la funcion eliminarReceta de recetasService para eliminar la receta
+   * @param receta 
+   */
   eliminarReceta(receta: Receta) {
     this.recetasService.eliminarReceta(receta.id);
     console.log('Eliminar receta:', receta);
   }
+  /**
+   * @function recetaSeleccionada
+   * @description Lleva a la pestaña de mostrar los ingredientes de la receta recibida
+   * @param receta 
+   */
   recetaSeleccionada(receta: Receta) {
     const URL = '/mostrar-ingredientes/' + receta.id
     this.router.navigateByUrl(URL);

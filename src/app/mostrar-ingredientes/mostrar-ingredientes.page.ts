@@ -28,6 +28,11 @@ export class MostrarIngredientesPage implements OnInit {
       }
     }
   }
+  /**
+   * @function agregar
+   * @description Agrega el ingrediente ingresado en la app en la lista de ingredientes actual
+   * @returns Nada (retorno innecesario a cambiar)
+   */
   agregar() {
     if (this.nombreIngrediente.length * this.amountIngrediente.length === 0) {
       return;
@@ -38,6 +43,11 @@ export class MostrarIngredientesPage implements OnInit {
     this.nombreIngrediente = '';
     this.amountIngrediente = '';
   }
+  /**
+   * @function EditarIngrediente
+   * @description Recibe un ingrediente y permite al usuario editarlo con un alertController
+   * @param ingrediente 
+   */
   async EditarIngrediente(ingrediente: Ingredient) {
     let alerta = await this.recetasService.alertController.create({
       header: 'Editar ingrediente',
@@ -76,14 +86,29 @@ export class MostrarIngredientesPage implements OnInit {
     });
     await alerta.present();
   }
+  /**
+   * @function editar
+   * @description LLama la funcion EditarIngrediente
+   * @param ingrediente 
+   */
   editar(ingrediente: Ingredient) {
     this.EditarIngrediente(ingrediente);
   }
+  /**
+   * @function eliminar
+   * @description Recibe un ingrediente y lo elimina de la lista de ingredientes actual
+   * @param ingrediente 
+   */
   eliminar(ingrediente: Ingredient) {
     this.receta.ingredients = this.receta.ingredients.filter((item)=> item !== ingrediente);
     this.recetasService.guardarStorage();
   }
   ngOnInit(): void {}
+  /**
+   * @function recetaSeleccionada
+   * @description Redirige a las intrucciones de la receta de los ingredientes actuales
+   * @param receta 
+   */
   recetaSeleccionada(receta: Receta) {
     const URL = '/mostrarInstrucciones/' + receta.id
     this.routerB.navigateByUrl(URL);
