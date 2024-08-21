@@ -5,6 +5,7 @@ import { Ingredient } from '../models/ingredients.model';
 import { Instruction } from '../models/intruction.model';
 import { Area } from '../models/areas.model';
 import { TranslateService } from '../services/translate.service';
+import { Receta } from '../models/receta.model';
 
 @Component({
   selector: 'app-tab1',
@@ -13,14 +14,16 @@ import { TranslateService } from '../services/translate.service';
 })
 export class Tab1Page {
   recetasAPI: any[] = [];
-  cantidadRecetas = 9;
+  cantidadRecetas = 10;
   isActive: boolean = false;
   categorias: any[] = [];
-  categoriaActual = "Categorias";
-  countriesNames: string[] = [];
+  recetasFiltro: any[] = [];
+  categoriaActual = 'Categorias';
+  paisActual = 'Paises';
+  paises: any[] = [];
   // Esto es de esta manera debido a que la API da el nombre del area y las imagenes se trabajan con las siglas y no hay una conversion directa debido a los nombres particulares que da la API
   areas: Area[] = [
-    new Area('America', 'US'),
+    new Area('American', 'US'),
     new Area('British', 'GB'),
     new Area('Canadian', 'CA'),
     new Area('Chinese', 'CN'),
@@ -46,40 +49,57 @@ export class Tab1Page {
     new Area('Thai', 'TH'),
     new Area('Tunisian', 'TN'),
     new Area('Turkish', 'TR'),
-    new Area('Uruguay', 'UY'),
+    new Area('Unknown', 'UY'),
     new Area('Vietnamese', 'VN'),
   ];
+  volverCategoria = {
+    strCategory: 'Volver',
+    strCategoryThumb: '../assets/back.png',
+  };
+  volverPais = {
+    name: 'Volver',
+    image: '../assets/back.png',
+  };
   constructor(
     public baseRecetas: BaseRecetasService,
     public recetasService: RecetasService,
     public translate: TranslateService
   ) {}
   /**
-   * Se ejecuta al iniciar la carga de la tab
+   * @function ngOnInit
+   * @description Se ejecuta al iniciar la carga de la tab
    */
   ngOnInit() {
-    this.ionViewDidLoad();
-  }
-  /**
-   * Se ejecuta al haber cargado la tab de manera correcta
-   */
-  ionViewDidLoad() {
     this.getRecetas();
     this.getCategorias();
+    this.getPaises();
   }
+  /**
+   * @function getCategorias
+   * @description Obtiene todas las categorias por ingrediente principal y las guarda en un array
+   */
   getCategorias() {
     this.categorias = [];
     this.baseRecetas.obtenerCategorias().subscribe({
       next: (data) => {
-        Object.values(data)[0].forEach((categoria: any) =>
-          this.categorias.push(categoria)
-        );
+        Object.values(data)[0].forEach((categoria: any) => {
+          this.categorias.push(categoria);
+        });
       },
       error: (error) => console.log(error.statusText),
     });
+    this.categorias.forEach((categoria) => (categoria.plate = false));
   }
   /**
-   * Obtiene recetas para rellenar la tab
+   * @function getPaises
+   * @description Reinicia la lista de paises a la original
+   */
+  getPaises() {
+    this.paises = this.areas;
+  }
+  /**
+   * @function getRecetas
+   * @description Obtiene recetas aleatorias y las guarda en un array
    */
   getRecetas() {
     this.recetasAPI = [];
@@ -92,7 +112,8 @@ export class Tab1Page {
     this.recetasAPI.forEach((receta) => (receta.favorite = false));
   }
   /**
-   * Guarda como receta segun los parametros.
+   * @function AgregarReceta
+   * @description Guarda una receta segun los parametros ingresados.
    * @param nombre Nombre de la Receta
    * @param ingredientes Lista de ingredientes
    * @param instrucciones Lista de pasos
@@ -116,20 +137,35 @@ export class Tab1Page {
       this.recetasService.presentToast('Receta favorita guardada!');
     }
   }
-  interactuarReceta(unaReceta: any) {
+  /**
+   * @function interactuarReceta
+   * @description Recibe una receta y invierte su estado de favorita.
+   * @param unaReceta Receta a interactuar
+   */
+  async interactuarReceta(unaReceta: any) {
     console.log(unaReceta);
-    if (!unaReceta.favorite) {
-      console.log('guardando');
-      this.guardarReceta(unaReceta);
-    } else {
-      console.log('Eliminando');
-      this.recetasService.eliminarReceta(unaReceta.idMeal / 1);
-      this.recetasService.presentToast('Receta favorita olvidada!');
-    }
-    unaReceta.favorite = !unaReceta.favorite;
+    this.baseRecetas.obtenerRecetaSegunID(unaReceta['idMeal']).subscribe({
+      next: (data) => {
+        let receta = data['meals' as keyof typeof data];
+        receta = receta[0 as keyof typeof receta];
+        if (!unaReceta.favorite) {
+          console.log('guardando');
+          this.guardarReceta(receta);
+        } else {
+          console.log('Eliminando');
+          this.recetasService.eliminarReceta(unaReceta['idMeal'] / 1);
+          this.recetasService.presentToast('Receta favorita olvidada!');
+        }
+        unaReceta.favorite = !unaReceta.favorite;
+      },
+      error: (error) => {
+        console.log(error.statusText);
+      },
+    });
   }
   /**
-   * Convierte una receta de la API a una de estructura propia
+   * @function guardarReceta
+   * @description Convierte una receta de la API a una de estructura propia
    * @param unaReceta Una receta proveniente de la API
    */
   guardarReceta(unaReceta: any) {
@@ -153,8 +189,8 @@ export class Tab1Page {
     instruccionesStr.splice(-1, 1);
     instruccionesStr.forEach((instruccionStr) => {
       this.translate.traslate(instruccionStr).then((result) => {
-        instruccionStr = result
-      })
+        instruccionStr = result;
+      });
       instrucciones.push(new Instruction(instruccionStr, false));
     });
     this.AgregarReceta(
@@ -165,31 +201,70 @@ export class Tab1Page {
       unaReceta.idMeal / 1
     );
   }
-  elegirCategoria(categoria: string) {
-    if (categoria != 'Volver') {
-      this.categoriaActual = categoria;
-      this.categorias = [
-        {
-          "strCategory": "Volver",
-          "strCategoryThumb": "../assets/back.png",
-        }
-      ]
-      this.baseRecetas.obtenerRecetasSegunCategoria(categoria).subscribe({
-        next: (data) => {
-          Object.values(data).forEach((recetas: any) =>
-            recetas.forEach( (receta: any) =>
-              this.categorias.push({
-              "strCategory": receta["strMeal"],
-              "strCategoryThumb": receta["strMealThumb"]
-            })
-          ));
-        },
-        error: (error) => console.log(error.statusText),
-      });
-      console.log(this.categorias)
-    } else {
-      this.categoriaActual = "Categorias";
+  /**
+   * @function elegirCategoria
+   * @description Recibe una categoria (ingrediente principal) y actualiza la lista de categoria a una que tiene las recetas que pertenecen a esa categoria
+   * @param categoria Categoria elegida
+   */
+  async elegirCategoria(categoria: any) {
+    if (categoria == this.volverCategoria) {
+      this.categoriaActual = 'Categorias';
       this.getCategorias();
+    } else {
+      if (!categoria['plate']) {
+        this.categoriaActual = categoria['strCategory'];
+        this.categorias = [this.volverCategoria];
+        this.baseRecetas
+          .obtenerRecetasSegunCategoria(categoria['strCategory'])
+          .subscribe({
+            next: (data) => {
+              Object.values(data).forEach((recetas: any) =>
+                recetas.forEach((receta: any) =>
+                  this.categorias.push({
+                    strCategory: receta['strMeal'],
+                    strCategoryThumb: receta['strMealThumb'],
+                    plate: true,
+                    idMeal: receta['idMeal'],
+                    favorite: false,
+                  })
+                )
+              );
+            },
+            error: (error) => console.log(error.statusText),
+          });
+      }
+    }
+  }
+  /**
+   * @function elegirPais
+   * @description Recibe un pais y actualiza la lista de paises a una que tiene las recetas que pertenecen a ese pais
+   * @param pais Pais elegido
+   */
+  async elegirPais(pais: any) {
+    if (pais == this.volverPais) {
+      this.paisActual = 'Paises';
+      this.getPaises();
+    } else {
+      if (!pais['plate']) {
+        this.paisActual = pais['name'];
+        this.paises = [this.volverPais];
+        this.baseRecetas.obtenerRecetasSegunPais(pais['name']).subscribe({
+          next: (data) => {
+            Object.values(data).forEach((recetas: any) =>
+              recetas.forEach((receta: any) =>
+                this.paises.push({
+                  name: receta['strMeal'],
+                  image: receta['strMealThumb'],
+                  plate: true,
+                  idMeal: receta['idMeal'],
+                  favorite: false,
+                })
+              )
+            );
+          },
+          error: (error) => console.log(error.statusText),
+        });
+      }
     }
   }
 }

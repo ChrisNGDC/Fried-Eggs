@@ -27,6 +27,11 @@ export class MostrarInstrucciones {
       }
     }
   }
+  /**
+   * @function agregar
+   * @description Agrega la instruccion ingresada en la app en la lista de instrucciones actual
+   * @returns Nada (retorno innecesario a cambiar)
+   */
   agregar() {
     if (this.descripcionPaso.length === 0) {
       return;
@@ -68,16 +73,26 @@ export class MostrarInstrucciones {
     await alerta.present();
   }
   /**
-   * 
+   * @function editar
+   * @description Llama a la funcion EditarInstruccion
    * @param instruccion 
    */
   editar(instruccion: Instruction) {
     this.EditarInstruccion(instruccion);
   }
+  /**
+   * @function eliminar
+   * @description Recibe una instruccion y la elimina de la lista de intrucciones actual
+   * @param instruccion 
+   */
   eliminar(instruccion: Instruction) {
     this.receta.recipe = this.receta.recipe.filter((item)=> item !== instruccion);
     this.recetasService.guardarStorage();
   }
+  /**
+   * @function cambioCheck
+   * @description Comprueba si todas las intrucciones estan marcadas y marca la receta como completada
+   */
   cambioCheck() {
     const faltanPasos = this.receta.recipe.some((item) => item.done == false);
     if (faltanPasos) {
