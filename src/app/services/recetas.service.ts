@@ -56,7 +56,7 @@ export class RecetasService {
   /**
    * @function eliminarReceta
    * @description Recibe un id de receta y la elimina del almacenamiento local
-   * @param idReceta 
+   * @param idReceta Id de una receta
    */
   eliminarReceta(idReceta: number) {
     let nuevoSave = this.recetas.filter(
@@ -69,7 +69,7 @@ export class RecetasService {
   /**
    * @function editarReceta
    * @description Recibe una receta y busca otra con el mismo id en el almacenamiento local y la sobreescribe (local por la recibida) 
-   * @param receta 
+   * @param receta Una receta
    */
   editarReceta(receta: Receta) {
     let recetaEditar = this.recetas.find(
@@ -84,7 +84,7 @@ export class RecetasService {
   /**
    * @function validarInput
    * @description Valida el input del alertController
-   * @param input 
+   * @param input Texto
    * @returns Si fue ingresado un valor o no (true/false)
    */
   validarInput(input: any): boolean {
@@ -100,7 +100,7 @@ export class RecetasService {
   /**
    * @function presentToast
    * @description Muestra un mensaje por sobre la app
-   * @param mensage 
+   * @param mensage Texto
    */
   async presentToast(mensage: string) {
     let toast = await this.toastController.create({
@@ -112,7 +112,7 @@ export class RecetasService {
   /**
    * @function obtenerReceta
    * @description Recibe un id de receta, la busca y la devuelve
-   * @param idReceta 
+   * @param idReceta Id de una receta
    * @returns La receta buscada
    */
   obtenerReceta(idReceta: string | number) {

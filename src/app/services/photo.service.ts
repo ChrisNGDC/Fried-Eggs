@@ -12,7 +12,7 @@ export class PhotoService {
   /**
    * @function takePhoto
    * @description Llama a la camara para permitir sacar una foto y la guarda en una variable temporal
-   * @param id 
+   * @param id Id de la foto
    * @param filePath 
    */
   public async takePhoto(id:string, filePath: string) {
